@@ -1,0 +1,10 @@
+2023-10-08 23:42:40,049 - Trainlog - INFO - ==================================================
+2023-10-08 23:42:40,049 - Trainlog - INFO - ==================================================
+2023-10-08 23:42:40,049 - Trainlog - INFO - hsi_height=166,hsi_width=600,hsi_band=63
+2023-10-08 23:42:40,049 - Trainlog - INFO - lidar_height=166,lidar_width=600,lidar_band=1
+2023-10-08 23:42:49,532 - Trainlog - INFO - Test records:
+2023-10-08 23:42:49,532 - Trainlog - INFO - Maximal Accuracy: 0.994484
+2023-10-08 23:42:49,532 - Trainlog - INFO - OA: 0.9945 | AA: 0.9909 | Kappa: 0.9926
+2023-10-08 23:42:49,532 - Trainlog - INFO - [0.99601395 0.98057579 0.99782135 1.         0.99990459 0.97083069]
+2023-10-08 23:42:49,532 - Trainlog - INFO - Parameter:
+2023-10-08 23:42:49,532 - Trainlog - INFO - {'gpu_id': '0', 'seed': 0, 'batch_size': 64, 'epochs': 3000, 'dataset': 'Trento', 'num_classes': 6, 'test_freq': 5, 'learning_rate': 0.0005, 'gamma': 0.9, 'step_size': 100, 'coefficient_hsi': 0.6, 'coefficient_vit': 0.7, 'flag': 'test', 'patch_size': 8, 'en_depth': 5, 'en_heads': 4, 'encoder_embed_dim': 64, 'num_patches': 64, 'hsp_vit_depth': 8, 'hsp_vit_num_heads': 16, 'use_head_select': True, 'hsp_qkv_bias': False, 'head_tau': 5}

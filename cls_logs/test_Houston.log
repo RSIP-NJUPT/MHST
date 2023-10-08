@@ -1,0 +1,12 @@
+2023-10-08 23:43:26,403 - Trainlog - INFO - ==================================================
+2023-10-08 23:43:26,403 - Trainlog - INFO - ==================================================
+2023-10-08 23:43:26,403 - Trainlog - INFO - hsi_height=349,hsi_width=1905,hsi_band=144
+2023-10-08 23:43:26,403 - Trainlog - INFO - lidar_height=349,lidar_width=1905,lidar_band=1
+2023-10-08 23:43:31,834 - Trainlog - INFO - Test records:
+2023-10-08 23:43:31,834 - Trainlog - INFO - Maximal Accuracy: 0.961912
+2023-10-08 23:43:31,834 - Trainlog - INFO - OA: 0.9619 | AA: 0.9680 | Kappa: 0.9588
+2023-10-08 23:43:31,834 - Trainlog - INFO - [0.98050366 0.9821718  0.99261448 0.99591503 0.99345336 0.99672131
+ 0.95592949 0.90767974 0.89204545 0.96768848 0.94320988 0.93816983
+ 0.97327394 1.         1.        ]
+2023-10-08 23:43:31,834 - Trainlog - INFO - Parameter:
+2023-10-08 23:43:31,834 - Trainlog - INFO - {'gpu_id': '0', 'seed': 0, 'batch_size': 64, 'epochs': 3000, 'dataset': 'Houston', 'num_classes': 15, 'test_freq': 8, 'learning_rate': 0.0008, 'gamma': 0.9, 'step_size': 100, 'coefficient_hsi': 0.6, 'coefficient_vit': 0.7, 'flag': 'test', 'patch_size': 8, 'en_depth': 5, 'en_heads': 4, 'encoder_embed_dim': 64, 'num_patches': 64, 'hsp_vit_depth': 8, 'hsp_vit_num_heads': 16, 'use_head_select': True, 'hsp_qkv_bias': False, 'head_tau': 5}
