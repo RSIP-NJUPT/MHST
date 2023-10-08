@@ -1,6 +1,6 @@
 # MHST-Net
 This an official Pytorch implementation of our paper "MHST: Multiscale Head Selection Transformer for Hyperspectral and LiDAR Classification".You can find [the PDF of this paper]().
-![MHST-Net](https://github.com/RSIP-NJUPT/MHST)
+![MHST-Net](./figure/MHST-Net.png)
 ****
 # Datasets
 - [Houston](https://hyperspectral.ee.uh.edu/?page_id=459)
@@ -10,7 +10,6 @@ This an official Pytorch implementation of our paper "MHST: Multiscale Head Sele
 ``` 
 python demo.py
 ``` 
-****
 ****
 # Results
 | Dataset | OA (%) | AA (%) | Kappa (%) |
