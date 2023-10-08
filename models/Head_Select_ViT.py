@@ -30,7 +30,7 @@ def _gumbel_sigmoid(logits, tau=1, hard=True, eps=1e-10, training=True, threshol
     return ret
 
 
-def get_random_policy(policy, ratio):
+def get_select_policy(policy, ratio):
     random_p = torch.empty_like(policy).fill_(ratio).bernoulli() + policy * 0.0
     return random_p
 
@@ -54,7 +54,7 @@ class HeadSelectBlock(nn.Module):
         sample = _gumbel_sigmoid(logits, self.tau, self.is_hard,
                                  threshold=self.threshold, training=self.training)
         if self.random_policy or self.random_head:
-            sample = get_random_policy(sample, self.random_head_ratio)
+            sample = get_select_policy(sample, self.random_head_ratio)
         sample = sample.unsqueeze(-1)
 
         width_select = sample.expand(-1, -1, self.head_dim)
@@ -217,7 +217,6 @@ class PoolAttention(nn.Module):
             assert head_select is not None
             width_select = None
 
-        # qkv:(b,num_heads,n,dim//num_heads)
         q = self.query(x,
                        width_select=width_select,
                        width_specify=width_specify).reshape(B, N, -1, C // self.num_heads).permute(0, 2, 1, 3)
@@ -353,21 +352,16 @@ class StepPoolViTBlock(nn.Module):
             self.head_select = HeadSelectBlock(dim_in=dim, num_heads=num_heads, tau=head_tau)
 
     def forward(self, x, mask=None, head_mask=None, width_specify=None):
-        """
-            width_select : (b,c,1)
-        """
         if self.norm_policy is not None:
             policy_token = self.norm_policy(x)[:, 0]
         else:
             policy_token = x[:, 0]
 
-        # True
         if self.head_select is not None:
             head_select, width_select, head_logits = self.head_select(policy_token)
         else:
             head_select, width_select, head_logits = None, None, None
 
-        # start 
         if self.only_head_attn:
             assert head_select is not None
             width_select = None
@@ -427,17 +421,17 @@ class HeadSelectPoolTransformer(nn.Module):
             filter_append(head_select_list, this_head_select)
             filter_append(head_select_logits_list, this_head_select_logits)
 
-        def convert_list_to_tensor(list_convert):
+        def list2tensor(list_convert):
             if len(list_convert):
                 result = torch.stack(list_convert, dim=1)
             else:
                 result = None
             return result
 
-        head_select = convert_list_to_tensor(head_select_list)
+        head_select = list2tensor(head_select_list)
         if head_select is not None:
             head_select = head_select.squeeze(-1)
-        head_select_logits = convert_list_to_tensor(head_select_logits_list)
+        head_select_logits = list2tensor(head_select_logits_list)
 
         x = self.norm(x)
         return x, head_select, attn_list, hidden_list, dict(head_select_logits=head_select_logits)
