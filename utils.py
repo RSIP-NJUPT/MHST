@@ -1,0 +1,296 @@
+import torch
+import torch.backends.cudnn as cudnn
+from sklearn.metrics import confusion_matrix
+import numpy as np
+from PIL import Image
+
+
+def normalize(x):
+    norm_x = np.zeros(x.shape)
+    for i in range(x.shape[2]):
+        input2_max = np.max(x[:, :, i])
+        input2_min = np.min(x[:, :, i])
+        norm_x[:, :, i] = (x[:, :, i] - input2_min) / (input2_max - input2_min)
+
+    return norm_x
+
+
+class AverageMeter(object):
+
+    def __init__(self):
+        self.reset()
+
+    def reset(self):
+        self.avg = 0
+        self.sum = 0
+        self.cnt = 0
+
+    def update(self, val, n=1):
+        self.sum += val * n
+        self.cnt += n
+        self.avg = self.sum / self.cnt
+
+
+def Accuracy(output, target, topk=(1,)):
+    maxk = max(topk)
+    batch_size = target.size(0)
+
+    _, pred = output.topk(maxk, 1, True, True)
+    pred = pred.t()
+    correct = pred.eq(target.view(1, -1).expand_as(pred))
+
+    res = []
+    for k in topk:
+        correct_k = correct[:k].view(-1).float().sum(0)
+        res.append(correct_k.mul_(100.0 / batch_size))
+    return res, target, pred.squeeze()
+
+
+def set_seed(seed):
+    torch.manual_seed(seed)
+    torch.cuda.manual_seed_all(seed)
+    np.random.seed(seed)
+    torch.backends.cudnn.deterministic = True
+    cudnn.benchmark = False
+
+
+def output_metric(tar, pre):
+    matrix = confusion_matrix(tar, pre)
+    OA, AA_mean, Kappa, AA = cal_results(matrix)
+    return OA, AA_mean, Kappa, AA
+
+
+def cal_results(matrix):
+    shape = np.shape(matrix)
+    number = 0
+    sum = 0
+    AA = np.zeros([shape[0]], dtype=np.float64)
+    for i in range(shape[0]):
+        number += matrix[i, i]
+        AA[i] = matrix[i, i] / np.sum(matrix[i, :])
+        sum += np.sum(matrix[i, :]) * np.sum(matrix[:, i])
+    OA = number / np.sum(matrix)
+    AA_mean = np.mean(AA)
+    pe = sum / (np.sum(matrix) ** 2)
+    Kappa = (OA - pe) / (1 - pe)
+    return OA, AA_mean, Kappa, AA
+
+
+def trPixel2Patch(Data1, Data2, patchsize, pad_width, TR_Label):
+    """
+        Data1: hsi
+        Data2: lidar
+    """
+    [m1, n1, l1] = np.shape(Data1)
+    Data2 = Data2.reshape([m1, n1, -1])
+    [m2, n2, l2] = np.shape(Data2)
+
+    for i in range(l1):
+        Data1[:, :, i] = (Data1[:, :, i] - Data1[:, :, i].min()) / (Data1[:, :, i].max() - Data1[:, :, i].min())
+    x1 = Data1
+    for i in range(l2):
+        Data2[:, :, i] = (Data2[:, :, i] - Data2[:, :, i].min()) / (Data2[:, :, i].max() - Data2[:, :, i].min())
+    x2 = Data2
+
+    x1_pad = np.empty((m1 + patchsize, n1 + patchsize, l1), dtype='float32')
+    x2_pad = np.empty((m2 + patchsize, n2 + patchsize, l2), dtype='float32')
+    for i in range(l1):
+        temp = x1[:, :, i]
+        temp2 = np.pad(temp, pad_width, 'symmetric')
+        x1_pad[:, :, i] = temp2
+    for i in range(l2):
+        temp = x2[:, :, i]
+        temp2 = np.pad(temp, pad_width, 'symmetric')
+        x2_pad[:, :, i] = temp2
+
+    [ind1, ind2] = np.where(TR_Label > 0)
+    ind3 = ind1 + pad_width
+    ind4 = ind2 + pad_width
+    TrainNum = len(ind1)
+
+    TrainPatch1 = np.empty((TrainNum, l1, patchsize, patchsize), dtype='float32')
+    TrainPatch2 = np.empty((TrainNum, l2, patchsize, patchsize), dtype='float32')
+    TrainLabel = np.empty(TrainNum)
+
+    for i in range(len(ind1)):
+        patch1 = x1_pad[(ind3[i] - pad_width):(ind3[i] + pad_width), (ind4[i] - pad_width):(ind4[i] + pad_width), :]
+        patch1 = np.transpose(patch1, (2, 0, 1))
+        TrainPatch1[i, :, :, :] = patch1
+
+        patch2 = x2_pad[(ind3[i] - pad_width):(ind3[i] + pad_width), (ind4[i] - pad_width):(ind4[i] + pad_width), :]
+        patch2 = np.transpose(patch2, (2, 0, 1))
+        TrainPatch2[i, :, :, :] = patch2
+
+        patchlabel = TR_Label[ind1[i], ind2[i]]
+        TrainLabel[i] = patchlabel
+
+    TrainPatch1 = torch.from_numpy(TrainPatch1)
+    TrainPatch2 = torch.from_numpy(TrainPatch2)
+
+    # add dimension for 3D-CNN
+    TrainPatch1 = TrainPatch1.unsqueeze(1)
+
+    TrainLabel = torch.from_numpy(TrainLabel) - 1
+    TrainLabel = TrainLabel.long()
+    return TrainPatch1, TrainPatch2, TrainLabel
+
+
+def tsPixel2Patch(Data1, Data2, patchsize, pad_width, TS_Label):
+    """
+        Data1: hsi
+        Data2: lidar
+    """
+    [m1, n1, l1] = np.shape(Data1)
+    Data2 = Data2.reshape([m1, n1, -1])
+    [m2, n2, l2] = np.shape(Data2)
+
+    for i in range(l1):
+        Data1[:, :, i] = (Data1[:, :, i] - Data1[:, :, i].min()) / (Data1[:, :, i].max() - Data1[:, :, i].min())
+    x1 = Data1
+    for i in range(l2):
+        Data2[:, :, i] = (Data2[:, :, i] - Data2[:, :, i].min()) / (Data2[:, :, i].max() - Data2[:, :, i].min())
+    x2 = Data2
+
+    x1_pad = np.empty((m1 + patchsize, n1 + patchsize, l1), dtype='float32')
+    x2_pad = np.empty((m2 + patchsize, n2 + patchsize, l2), dtype='float32')
+    for i in range(l1):
+        temp = x1[:, :, i]
+        temp2 = np.pad(temp, pad_width, 'symmetric')
+        x1_pad[:, :, i] = temp2
+    for i in range(l2):
+        temp = x2[:, :, i]
+        temp2 = np.pad(temp, pad_width, 'symmetric')
+        x2_pad[:, :, i] = temp2
+
+    [ind1, ind2] = np.where(TS_Label > 0)
+    ind3 = ind1 + pad_width
+    ind4 = ind2 + pad_width
+    TestNum = len(ind1)
+
+    TestPatch1 = np.empty((TestNum, l1, patchsize, patchsize), dtype='float32')
+    TestPatch2 = np.empty((TestNum, l2, patchsize, patchsize), dtype='float32')
+    TestLabel = np.empty(TestNum)
+
+    for i in range(len(ind1)):
+        patch1 = x1_pad[(ind3[i] - pad_width):(ind3[i] + pad_width), (ind4[i] - pad_width):(ind4[i] + pad_width), :]
+        patch1 = np.transpose(patch1, (2, 0, 1))
+        TestPatch1[i, :, :, :] = patch1
+
+        patch2 = x2_pad[(ind3[i] - pad_width):(ind3[i] + pad_width), (ind4[i] - pad_width):(ind4[i] + pad_width), :]
+        patch2 = np.transpose(patch2, (2, 0, 1))
+        TestPatch2[i, :, :, :] = patch2
+
+        patchlabel = TS_Label[ind1[i], ind2[i]]
+        TestLabel[i] = patchlabel
+
+    TestPatch1 = torch.from_numpy(TestPatch1)
+    TestPatch2 = torch.from_numpy(TestPatch2)
+
+    # add dimension
+    TestPatch1 = TestPatch1.unsqueeze(1)
+
+    TestLabel = torch.from_numpy(TestLabel) - 1
+    TestLabel = TestLabel.long()
+    return TestPatch1, TestPatch2, TestLabel, ind1, ind2
+
+
+def train_epoch(model, train_loader, criterion, optimizer):
+    objs = AverageMeter()
+    top1 = AverageMeter()
+    tar = np.array([])
+    pre = np.array([])
+
+    for batch_idx, (batch_data1, batch_data2, batch_target) in enumerate(train_loader):
+        batch_data1 = batch_data1.cuda()
+        batch_data2 = batch_data2.cuda()
+        batch_target = batch_target.cuda()
+
+        optimizer.zero_grad()
+        batch_pred = model(batch_data1, batch_data2)
+        loss = criterion(batch_pred, batch_target)
+        loss.backward()
+        optimizer.step()
+
+        prec1, t, p = Accuracy(batch_pred, batch_target, topk=(1,))
+        n = batch_data1.shape[0]
+        objs.update(loss.data, n)
+        top1.update(prec1[0].data, n)
+        tar = np.append(tar, t.data.cpu().numpy())
+        pre = np.append(pre, p.data.cpu().numpy())
+
+    return top1.avg, objs.avg, tar, pre
+
+
+def valid_epoch(model, valid_loader, criterion, get_ts_result):
+    objs = AverageMeter()
+    top1 = AverageMeter()
+    tar = np.array([])
+    pre = np.array([])
+    # add
+    test_result = []
+
+    for batch_idx, (batch_data1, batch_data2, batch_target) in enumerate(valid_loader):
+        batch_data1 = batch_data1.cuda()
+        batch_data2 = batch_data2.cuda()
+        batch_target = batch_target.cuda()
+
+        batch_pred = model(batch_data1, batch_data2)
+        loss = criterion(batch_pred, batch_target)
+
+        prec1, t, p = Accuracy(batch_pred, batch_target, topk=(1,))
+        n = batch_data1.shape[0]
+        objs.update(loss.data, n)
+        top1.update(prec1[0].data, n)
+        tar = np.append(tar, t.data.cpu().numpy())
+        pre = np.append(pre, p.data.cpu().numpy())
+
+        # add
+        _, batch_pred_result = batch_pred.max(1)
+        test_result.extend((batch_pred_result + 1).cpu().numpy())
+
+    if get_ts_result:
+        return tar, pre, test_result
+
+    return tar, pre
+
+
+def draw_classification_map(label_matrix, img_path: str, dataset_name: str = 'Houston'):
+    if dataset_name == 'Houston':
+        color_map = {
+            0: (0, 0, 0),
+            1: (0, 245, 255),  # Healthy grass Turquoise1
+            2: (0, 255, 127),  # Stressed grass 亮绿
+            3: (139, 0, 0),  # Synthetis grass 棕
+            4: (0, 100, 0),  # Tree 绿
+            6: (255, 231, 186),  # Soil 小麦
+            7: (0, 0, 139),  # Water 蓝
+            8: (0, 139, 139),  # Residential 深绿
+            9: (255, 165, 0),  # Commercial 橘
+            10: (255, 255, 0),  # Road 金黄
+            11: (119, 136, 153),  # Railway 浅灰
+            12: (255, 0, 255),  # Park lot 1 粉
+            13: (255, 0, 0),  # Park lot 2 红
+            14: (104, 34, 139),  # Tennis court 紫
+            15: (205, 92, 92),  # Running track IndianRed
+        }
+    elif dataset_name == 'Trento':
+        color_map = {
+            0: (0, 0, 0),
+            1: (0, 100, 0),  # apple trees 深绿
+            2: (255, 165, 0),  # Buildings  橘
+            3: (255, 0, 0),  # Ground 红
+            4: (139, 0, 0),  # Woods 棕
+            5: (0, 0, 139),  # Vineyard 蓝
+            6: (104, 34, 139),  # Roads 紫
+        }
+    else:
+        raise 'datasets name error'
+
+    label_matrix = np.array(label_matrix).astype(np.uint8)
+    rgb_array = np.zeros((label_matrix.shape[0], label_matrix.shape[1], 3), dtype=np.uint8)
+
+    for class_id, color in color_map.items():
+        rgb_array[label_matrix == class_id] = color
+
+    rgb_image = Image.fromarray(rgb_array)
+    rgb_image.save(img_path)
