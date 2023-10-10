@@ -1,5 +1,5 @@
 # -*- coding:utf-8 -*-
-# @Time       :2023/8/18 10:34 AM
+# @Time       :2023/8/18 10:35 AM
 # @AUTHOR     :Duo Wang
 # @FileName   :demo.py
 import torch
@@ -107,14 +107,13 @@ def train1time():
     Data2 = Data2.astype(np.float32)  # lidar
     TrLabel = loadmat(LabelPath)['train_data']
     TsLabel = loadmat(LabelPath)['test_data']
-    draw_classification_map(TsLabel, 'cls_map/{}_groundTruth.png'.format(args.dataset), args.dataset)
 
     patchsize = args.patch_size  # input spatial size for CNN
     pad_width = np.floor(patchsize / 2)
     pad_width = int(pad_width)
     TrainPatch1, TrainPatch2, TrainLabel = trPixel2Patch(
         Data1, Data2, patchsize, pad_width, TrLabel)
-    TestPatch1, TestPatch2, TestLabel, xIndex_list, yIndex_list = tsPixel2Patch(
+    TestPatch1, TestPatch2, TestLabel, _, _ = tsPixel2Patch(
         Data1, Data2, patchsize, pad_width, TsLabel)
 
     train_dataset = Data.TensorDataset(
@@ -198,22 +197,40 @@ def train1time():
 
     if args.flag == 'test':
         # test best model
-        best_test_loader = Data.DataLoader(
-            test_dataset, batch_size=args.batch_size, shuffle=False)
+        get_ts_result = False
         model.eval()
         model.load_state_dict(torch.load('cls_param/MHSTNet_{}.pkl'.format(args.dataset)))
 
-        get_ts_result = True  # if True, return cls result
-        tar_v, pre_v, ts_result = valid_epoch(model, best_test_loader, criterion, get_ts_result)
+        tar_v, pre_v = valid_epoch(model, test_loader, criterion, get_ts_result)
         OA, AA, Kappa, CA = output_metric(tar_v, pre_v)
         logger.info("Test records:")
-        logger.info("Maximal Accuracy: %f" % (OA))
+        logger.info("Maximal Accuracy: %f" % OA)
         logger.info("OA: {:.4f} | AA: {:.4f} | Kappa: {:.4f}".format(OA, AA, Kappa))
         logger.info(CA)
         logger.info("Parameter:")
         logger.info(vars(args))
 
-        # output cls map
+        # draw map
+        if args.dataset == 'Houston':
+            TR_TS_Path = 'Data/Houston/tr_ts.mat'
+        elif args.dataset == 'Trento':
+            TR_TS_Path = 'Data/Trento/tr_ts.mat'
+        else:
+            raise "Correct dataset needed!"
+
+        TR_TS_Label = loadmat(TR_TS_Path)['tr_ts']
+        # draw gt map
+        draw_classification_map(TR_TS_Label, 'cls_map/{}_groundTruth.png'.format(args.dataset), args.dataset)
+        # draw cls map
+        TR_TS_Patch1, TR_TS_Patch2, TR_TS_Label, xIndex_list, yIndex_list = tsPixel2Patch(
+            Data1, Data2, patchsize, pad_width, TR_TS_Label)
+        TR_TS_dataset = Data.TensorDataset(
+            TR_TS_Patch1, TR_TS_Patch2, TR_TS_Label)
+        best_test_loader = Data.DataLoader(
+            TR_TS_dataset, batch_size=args.batch_size, shuffle=False)
+
+        get_ts_result = True  # if True, return cls result
+        ts_result = valid_epoch(model, best_test_loader, criterion, get_ts_result)
         ts_result_matrix = np.full((H1, W1), 0)
         for i in range(len(ts_result)):
             ts_result_matrix[xIndex_list[i], yIndex_list[i]] = ts_result[i]
