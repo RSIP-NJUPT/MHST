@@ -249,7 +249,7 @@ def valid_epoch(model, valid_loader, criterion, get_ts_result):
         test_result.extend((batch_pred_result + 1).cpu().numpy())
 
     if get_ts_result:
-        return tar, pre, test_result
+        return test_result
 
     return tar, pre
 
