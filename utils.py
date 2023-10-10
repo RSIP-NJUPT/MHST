@@ -258,30 +258,31 @@ def draw_classification_map(label_matrix, img_path: str, dataset_name: str = 'Ho
     if dataset_name == 'Houston':
         color_map = {
             0: (0, 0, 0),
-            1: (0, 245, 255),  # Healthy grass Turquoise1
-            2: (0, 255, 127),  # Stressed grass 亮绿
-            3: (139, 0, 0),  # Synthetis grass 棕
-            4: (0, 100, 0),  # Tree 绿
-            6: (255, 231, 186),  # Soil 小麦
-            7: (0, 0, 139),  # Water 蓝
-            8: (0, 139, 139),  # Residential 深绿
-            9: (255, 165, 0),  # Commercial 橘
-            10: (255, 255, 0),  # Road 金黄
-            11: (119, 136, 153),  # Railway 浅灰
-            12: (255, 0, 255),  # Park lot 1 粉
-            13: (255, 0, 0),  # Park lot 2 红
-            14: (104, 34, 139),  # Tennis court 紫
-            15: (205, 92, 92),  # Running track IndianRed
+            1: (219, 94, 86),  # Healthy grass
+            2: (219, 147, 86),  # Stressed grass
+            3: (219, 200, 86),  # Synthetis grass
+            4: (184, 219, 86),  # Tree
+            5: (131, 219, 86),  # Soil
+            6: (86, 219, 94),  # Water
+            7: (86, 219, 147),  # Residential
+            8: (86, 219, 200),  # Commercial
+            9: (86, 184, 219),  # Road
+            10: (85, 130, 217),  # Highway
+            11: (93, 85, 216),  # Railway
+            12: (145, 85, 216),  # Park lot 1
+            13: (195, 84, 214),  # Park lot 2
+            14: (216, 85, 182),  # Tennis court
+            15: (216, 85, 129),  # Running track IndianRed
         }
     elif dataset_name == 'Trento':
         color_map = {
             0: (0, 0, 0),
-            1: (0, 100, 0),  # apple trees 深绿
-            2: (255, 165, 0),  # Buildings  橘
-            3: (255, 0, 0),  # Ground 红
-            4: (139, 0, 0),  # Woods 棕
-            5: (0, 0, 139),  # Vineyard 蓝
-            6: (104, 34, 139),  # Roads 紫
+            1: (56, 86, 159),  # apple trees
+            2: (81, 204, 237),  # Buildings
+            3: (156, 206, 109),  # Ground
+            4: (251, 209, 26),  # Woods
+            5: (236, 53, 37),  # Vineyard
+            6: (125, 21, 22),  # Roads
         }
     else:
         raise 'datasets name error'
