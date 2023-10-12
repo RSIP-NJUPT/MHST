@@ -13,6 +13,7 @@ python demo.py
 ``` 
 ****
 # Results
+All the results presented here are referenced from the original paper.
 | Dataset | OA (%) | AA (%) | Kappa (%) |
 | :----: |:------:|:------:|:---------:|
 | Houston  | 96.19  | 96.80  |   95.88   |
