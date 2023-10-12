@@ -4,7 +4,7 @@ This an official Pytorch implementation of our paper "**MHST: Multiscale Head Se
 ****
 # Datasets
 - [Houston2013 dataset](https://hyperspectral.ee.uh.edu/?page_id=459)
-, initially featured in the 2013 IEEE GRSS data fusion contest, was captured using the ITRES CASI-1500 sensor over the University of Houston campus in June 2012. The dataset includes a hyperspectral image (HSI) and a LiDAR-based digital surface model (DSM), both sharing dimensions of 349 × 1905 pixels and a spatial resolution of 2.5 m. The hyperspectral image comprises 144 spectral bands covering a wavelength range from 0.38 to 1.05 μm. The dataset encompasses 15,029 ground-truth samples across 15 classes, making it a valuable resource for various geospatial analyses and land cover mapping applications.
+, initially featured in the 2013 IEEE GRSS data fusion contest, was captured using the ITRES CASI-1500 sensor over the University of Houston campus in June 2012. The dataset includes a hyperspectral image (HSI) and a LiDAR-based digital surface model (DSM), both sharing dimensions of 349 × 1905 pixels and a spatial resolution of 2.5 m. The hyperspectral image comprises 144 spectral bands covering a wavelength range from 0.364 to 1.046 μm. The dataset encompasses 15,029 ground-truth samples across 15 classes, making it a valuable resource for various geospatial analyses and land cover mapping applications.
 - [Trento](https://github.com/danfenghong/IEEE_GRSL_EndNet/blob/master/README.md)
 ****
 # Train MHST-Net
