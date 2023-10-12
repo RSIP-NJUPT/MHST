@@ -33,6 +33,8 @@ parser.add_argument('--num_classes', choices=[6, 15], default=15,
                     help='number of classes')
 parser.add_argument('--test_freq', type=int, choices=[5, 8], default=8,
                     help='number of evaluation for Trento & Houston respectively')
+parser.add_argument('--patch_size', type=int, default=8,
+                    help='cnn input size')
 parser.add_argument('--learning_rate', type=float, choices=[0.0005, 0.0008], default=0.0008,
                     help='learning rate for Trento & Houston respectively')
 parser.add_argument('--gamma', type=float, default=0.9,
@@ -40,14 +42,11 @@ parser.add_argument('--gamma', type=float, default=0.9,
 parser.add_argument('--step_size', type=int, default=100,
                     help='')
 parser.add_argument('--coefficient_hsi', type=float, default=0.6,
-                    help='weight of HSI data in feature fusion, LiDAR:(1-coefficient_hsi)')
+                    help='weight of HSI data in feature fusion, LiDAR:1-coefficient_hsi')
 parser.add_argument('--coefficient_vit', type=float, default=0.7,
-                    help='weight of ViT cls result in fusion classification, CNN:(1-coefficient_vit)')
+                    help='weight of ViT cls result in fusion classification, CNN:1-coefficient_vit')
 parser.add_argument('--flag', choices=['train', 'test'], default='test',
                     help='testing mark')
-
-parser.add_argument('--patch_size', type=int, default=8,
-                    help='cnn input size')
 parser.add_argument('--en_depth', type=int, default=5,
                     help='depth of vit encoder')
 parser.add_argument('--en_heads', type=int, default=4,
