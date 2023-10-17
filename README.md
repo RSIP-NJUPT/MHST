@@ -3,9 +3,11 @@ This an official Pytorch implementation of our paper ["MHST: Multiscale Head Sel
 ![MHST-Net](./figure/MHST-Net.png)
 ****
 # Datasets
-- [Houston2013 dataset](https://hyperspectral.ee.uh.edu/?page_id=459)
-, initially featured in the 2013 IEEE GRSS data fusion contest, was captured using the ITRES CASI-1500 sensor over the University of Houston campus in June 2012. The dataset includes a hyperspectral image (HSI) and a LiDAR-based digital surface model (DSM), both sharing dimensions of 349 × 1905 pixels and a spatial resolution of 2.5 m. The hyperspectral image comprises 144 spectral bands covering a wavelength range from 0.364 to 1.046 μm. The dataset encompasses 15,029 ground-truth samples across 15 classes, making it a valuable resource for various geospatial analyses and land cover mapping applications.
-- [Trento](https://github.com/danfenghong/IEEE_GRSL_EndNet/blob/master/README.md)
+- [The Houston2013 dataset](https://hyperspectral.ee.uh.edu/?page_id=459)
+includes a hyperspectral image (HSI) and a LiDAR-based digital surface model (DSM), collected by the National Center for Airborne Laser Mapping (NCALM) using the ITRES CASI-1500 sensor over the University of Houston campus in June 2012. The HSI comprise 144 spectral bands covering a wavelength range from 0.38 to 1.05 µm while LiDAR data are provided for a single band. Both the HSI and LiDAR data share dimensions of 349 × 1905 pixels with a spatial resolution of 2.5 m. The dataset contains 15 categories, with a total of 15,029 real samples available. 
+- [The Trento dataset](https://github.com/danfenghong/IEEE_GRSL_EndNet/blob/master/README.md)
+comprises HSI and LiDAR data obtained from southern Trento, Italy. The HSI was collected by an AISA Eagle sensor, consisting of 63 spectral bands with a wavelength range from 0.42 to 0.99 µm. LiDAR data with 1 raster were acquired by the Optech ALTM 3100EA sensor. The scene consists of 166 × 600 pixels, with a spatial resolution of 1 m. This dataset contains 6 land cover types
+with a total of 30,214 real samples. 
 ****
 # Train MHST-Net
 ``` 
