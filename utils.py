@@ -260,7 +260,7 @@ def draw_classification_map(label_matrix, img_path: str, dataset_name: str = 'Ho
             0: (0, 0, 0),
             1: (219, 94, 86),  # Healthy grass
             2: (219, 147, 86),  # Stressed grass
-            3: (219, 200, 86),  # Synthetis grass
+            3: (219, 200, 86),  # Synthetic grass
             4: (184, 219, 86),  # Tree
             5: (131, 219, 86),  # Soil
             6: (86, 219, 94),  # Water
