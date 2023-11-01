@@ -37,4 +37,4 @@ If you find this paper useful, please cite:
 ```
 ****
 # Contact
-Duo Wang: [b21041510@njupt.edu.cn](b21041510@njupt.edu.cn)
+Duo Wang: [njwangduo@163.com](njwangduo@163.com)
