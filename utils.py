@@ -272,7 +272,7 @@ def draw_classification_map(label_matrix, img_path: str, dataset_name: str = 'Ho
             12: (145, 85, 216),  # Park lot 1
             13: (195, 84, 214),  # Park lot 2
             14: (216, 85, 182),  # Tennis court
-            15: (216, 85, 129),  # Running track IndianRed
+            15: (216, 85, 129),  # Running track
         }
     elif dataset_name == 'Trento':
         color_map = {
