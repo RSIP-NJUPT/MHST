@@ -1,0 +1,11 @@
+2023-12-07 01:14:51,406 - Trainlog - INFO - ==================================================
+2023-12-07 01:14:51,406 - Trainlog - INFO - ==================================================
+2023-12-07 01:14:51,406 - Trainlog - INFO - hsi_height=325,hsi_width=220,hsi_band=64
+2023-12-07 01:14:51,406 - Trainlog - INFO - lidar_height=325,lidar_width=220,lidar_band=1
+2023-12-07 01:15:08,042 - Trainlog - INFO - Test records:
+2023-12-07 01:15:08,042 - Trainlog - INFO - Maximal Accuracy: 0.887058
+2023-12-07 01:15:08,042 - Trainlog - INFO - OA: 0.8871 | AA: 0.9008 | Kappa: 0.8532
+2023-12-07 01:15:08,042 - Trainlog - INFO - [0.91809713 0.85700713 0.72779244 0.89807475 0.88290327 1.
+ 0.93051081 0.95517799 0.82188679 0.92682927 0.99043062]
+2023-12-07 01:15:08,043 - Trainlog - INFO - Parameter:
+2023-12-07 01:15:08,043 - Trainlog - INFO - {'gpu_id': '0', 'seed': 0, 'batch_size': 64, 'epochs': 3000, 'dataset': 'Muufl', 'num_classes': 11, 'test_freq': 10, 'patch_size': 8, 'learning_rate': 0.0004, 'gamma': 0.9, 'step_size': 100, 'coefficient_hsi': 0.6, 'coefficient_vit': 0.7, 'flag': 'test', 'en_depth': 5, 'en_heads': 4, 'encoder_embed_dim': 64, 'num_patches': 64, 'hsp_vit_depth': 8, 'hsp_vit_num_heads': 16, 'use_head_select': True, 'hsp_qkv_bias': False, 'head_tau': 5}
