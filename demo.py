@@ -27,16 +27,16 @@ parser.add_argument('--batch_size', type=int, default=64,
                     help='number of batch size')
 parser.add_argument('--epochs', type=int, default=3000,
                     help='number of epoch')
-parser.add_argument('--dataset', choices=['Trento', 'Houston'], default='Houston',
+parser.add_argument('--dataset', choices=['Trento', 'Houston', 'Muufl'], default='Houston',
                     help='dataset to use')
-parser.add_argument('--num_classes', choices=[6, 15], default=15,
+parser.add_argument('--num_classes', choices=[6, 15, 11], default=15,
                     help='number of classes')
-parser.add_argument('--test_freq', type=int, choices=[5, 8], default=8,
-                    help='number of evaluation for Trento & Houston respectively')
+parser.add_argument('--test_freq', type=int, choices=[5, 8, 10], default=8,
+                    help='number of test frequency')
 parser.add_argument('--patch_size', type=int, default=8,
                     help='cnn input size')
-parser.add_argument('--learning_rate', type=float, choices=[0.0005, 0.0008], default=0.0008,
-                    help='learning rate for Trento & Houston respectively')
+parser.add_argument('--learning_rate', type=float, choices=[0.0005, 0.0008, 0.0004], default=0.0008,
+                    help='learning rate for Trento & Houston & Muufl respectively')
 parser.add_argument('--gamma', type=float, default=0.9,
                     help='')
 parser.add_argument('--step_size', type=int, default=100,
@@ -100,6 +100,12 @@ def train1time():
         Data1 = loadmat(DataPath1)['HSI']
         Data2 = loadmat(DataPath2)['LiDAR']
         LabelPath = 'Data/Trento/train_test_gt.mat'
+    elif args.dataset == 'Muufl':
+        DataPath1 = 'Data/Muufl/HSI.mat'
+        DataPath2 = 'Data/Muufl/LiDAR_DEM1.mat'
+        Data1 = loadmat(DataPath1)['HSI']
+        Data2 = loadmat(DataPath2)['LiDAR']
+        LabelPath = 'Data/Muufl/train_test_gt_60.mat'
     else:
         raise "Correct dataset needed!"
 
@@ -215,6 +221,8 @@ def train1time():
             TR_TS_Path = 'Data/Houston/tr_ts.mat'
         elif args.dataset == 'Trento':
             TR_TS_Path = 'Data/Trento/tr_ts.mat'
+        elif args.dataset == 'Muufl':
+            TR_TS_Path = 'Data/Muufl/tr_ts.mat'
         else:
             raise "Correct dataset needed!"
 
