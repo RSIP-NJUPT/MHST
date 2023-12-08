@@ -284,6 +284,21 @@ def draw_classification_map(label_matrix, img_path: str, dataset_name: str = 'Ho
             5: (236, 53, 37),  # Vineyard
             6: (125, 21, 22),  # Roads
         }
+    elif dataset_name == 'Muufl':
+        color_map = {
+            -1: (0, 0, 0),
+            1: (59, 132, 70),  # Trees
+            2: (83, 172, 71),  # Mostly grass
+            3: (0, 204, 204),  # Mixed ground surface
+            4: (146, 82, 52),  # Dirt and sand
+            5: (218, 50, 43),  # Road
+            6: (103, 189, 199),  # Water
+            7: (229, 229, 240),  # Buildings shadow
+            8: (199, 177, 202),  # Buildings
+            9: (218, 142, 51),  # Sidewalk
+            10: (224, 220, 83),  # Yellow curb
+            11: (228, 119, 90),  # Cloth panels
+        }
     else:
         raise 'datasets name error'
 
