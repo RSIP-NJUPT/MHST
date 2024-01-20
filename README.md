@@ -28,10 +28,10 @@ All the results presented here are referenced from the original paper.
 If you find this paper useful, please cite:
 ``` 
 @ARTICLE{,
-  author={Kang Ni, Duo Wang, Zhizhong Zheng},
-  journal={}, 
-  title={}, 
-  year={2023},
+  author={Kang Ni, Duo Wang, Zhizhong Zheng, Peng Wang},
+  journal={IEEE Journal of Selected Topics in Applied Earth Observations and Remote Sensing}, 
+  title={MHST: Multiscale Head Selection Transformer for Hyperspectral and LiDAR Classification}, 
+  year={2024},
   volume={},
   number={},
   pages={},
