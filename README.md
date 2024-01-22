@@ -29,7 +29,7 @@ If you find this paper useful, please cite:
 ``` 
 @ARTICLE{,
   author={Kang Ni, Duo Wang, Zhizhong Zheng, Peng Wang},
-  journal={IEEE Journal of Selected Topics in Applied Earth Observations and Remote Sensing}, 
+  journal={}, 
   title={MHST: Multiscale Head Selection Transformer for Hyperspectral and LiDAR Classification}, 
   year={2024},
   volume={},
