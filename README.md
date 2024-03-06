@@ -32,9 +32,9 @@ If you find this paper useful, please cite:
   journal={IEEE Journal of Selected Topics in Applied Earth Observations and Remote Sensing}, 
   title={MHST: Multiscale Head Selection Transformer for Hyperspectral and LiDAR Classification}, 
   year={2024},
-  volume={},
+  volume={17},
   number={},
-  pages={},
+  pages={5470-5483},
   doi={10.1109/JSTARS.2024.3366614}
 }
 ```
