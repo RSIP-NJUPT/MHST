@@ -1,5 +1,5 @@
 # MHST-Net
-This an official Pytorch implementation of our paper ["MHST: Multiscale Head Selection Transformer for Hyperspectral and LiDAR Classification"](https://ieeexplore.ieee.org/document/10438852).The specific details of the model are as follows.
+This an official Pytorch implementation of our paper ["MHST: Multiscale Head Selection Transformer for Hyperspectral and LiDAR Classification"](https://ieeexplore.ieee.org/document/10438852). The specific details of the model are as follows.
 ![MHST-Net](./figure/MHST-Net.jpg)
 ****
 # Datasets
